@@ -1,163 +1,71 @@
 import pandas as pd
 import numpy as np
+import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.cluster import KMeans
+from sklearn.metrics import classification_report, accuracy_score, silhouette_score
 
-# 1. Load data
-file_path = 'Wellbeing_and_lifestyle_data_Kaggle.csv'
-try:
-    df = pd.read_csv(file_path)
-    print("Dataset berhasil dimuat!")
-except FileNotFoundError:
-    print(f"File '{file_path}' tidak ditemukan. Pastikan file ada di folder yang sama.")
-    exit() # Berhenti jika file tidak ada
+# 1. LOAD DATA
+df = pd.read_csv('university_student_stress_dataset.csv')
+df.columns = df.columns.str.strip() 
 
-# --- DATA CLEANING ---
-# Membersihkan spasi di nama kolom 
-df.columns = df.columns.str.strip()
+# --- 2. MAPPING SESUAI ISI CSV ---
+mapping_dict = {
+    'Tuition': {'Yes': 1, 'No': 0},
+    'Physical_Exercise': {'Yes': 1, 'No': 0},
+    'Family_Income_Level': {'Low': 0, 'Medium': 1, 'High': 2},
+    'University_Type': {'National University': 0, 'Private University': 1} # Disesuaikan dengan gambar
+}
 
-# 2. Konversi DAILY_STRESS ke numerik 
-df['DAILY_STRESS'] = pd.to_numeric(df['DAILY_STRESS'], errors='coerce')
+for col, mapping in mapping_dict.items():
+    if col in df.columns:
+        df[col] = df[col].map(mapping)
 
-# Hapus baris yang DAILY_STRESS-nya kosong (NaN) setelah konversi
-df = df.dropna(subset=['DAILY_STRESS'])
-
-# 3. Cek Missing Values di seluruh kolom
-print("\n--- Data Kosong per Kolom ---")
-print(df.isnull().sum())
-
-# --- FEATURE ENGINEERING ---
-
-# 4. Fungsi mapping sesuai standar 4 Tier di proposal
-def map_stress(val):
-    if val <= 1: return 'Normal'
-    elif val <= 3: return 'Mild'
-    elif val <= 4: return 'Moderate'
-    else: return 'Severe'
-
-# Terapkan ke kolom baru
-df['STRESS_LEVEL'] = df['DAILY_STRESS'].apply(map_stress)
-
-# 5. Lihat distribusi target baru
-print("\n--- Distribusi Level Stres (Target) ---")
-print(df['STRESS_LEVEL'].value_counts())
-
-# 6. Menyiapkan Fitur (X) sesuai Proposal
-# Pastikan fitur-fitur ini juga dikonversi ke numerik
-#features = ['SLEEP_HOURS', 'DAILY_STEPS', 'SOCIAL_NETWORK', 'TODO_COMPLETED', 'DAILY_SHOUTING']
+# 3. SETUP FEATURES (Urutan sesuai gambar untuk konsistensi)
 features = [
-    'SLEEP_HOURS', 'DAILY_STEPS', 'SOCIAL_NETWORK', 'TODO_COMPLETED', 
-    'DAILY_SHOUTING', 'FRUITS_VEGGIES', 'WORK_LIFE_BALANCE_SCORE', 
-    'PLACES_VISITED', 'PERSONAL_AWARDS'
+    'Study_Hours', 'Sleep_Hours', 'Screen_Time', 'Social_Media_Use', 
+    'Anxiety_Level', 'Peer_Pressure', 'Tuition', 'Physical_Exercise', 
+    'Family_Income_Level', 'University_Type'
 ]
 
-for col in features:
-    df[col] = pd.to_numeric(df[col], errors='coerce')
+# Bersihkan data (dropna)
+df = df.dropna(subset=features + ['Stress_Level'])
+print(f"Berhasil memproses {len(df)} baris data.")
 
-# Bersihkan lagi jika ada fitur yang kosong setelah konversi numerik
-df = df.dropna(subset=features)
-
-# --- 7. LABEL ENCODING & SCALING ---
-
-# Ubah Target Teks -> Angka (Normal=0, Mild=1, dst)
+X = df[features]
 le = LabelEncoder()
-y = le.fit_transform(df['STRESS_LEVEL'])
+y = le.fit_transform(df['Stress_Level'])
 
-# Ambil Fitur (X)
-#X = df[['SLEEP_HOURS', 'DAILY_STEPS', 'SOCIAL_NETWORK', 'TODO_COMPLETED', 'DAILY_SHOUTING']]
-X = df[[
-    'SLEEP_HOURS', 'DAILY_STEPS', 'SOCIAL_NETWORK', 'TODO_COMPLETED', 
-    'DAILY_SHOUTING', 'FRUITS_VEGGIES', 'WORK_LIFE_BALANCE_SCORE', 
-    'PLACES_VISITED', 'PERSONAL_AWARDS'
-]]
-
-# Split Data 80:20
+# 4. SPLIT & SCALING
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Scaling (PENTING untuk Logistic Regression)
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# --- 8. TRAINING PHASE 1: LOGISTIC REGRESSION (BASELINE) ---
+# --- TRAINING ---
+print("\n--- Phase 1: Logistic Regression ---")
+lr = LogisticRegression(max_iter=1000).fit(X_train_scaled, y_train)
+print(f"Accuracy: {accuracy_score(y_test, lr.predict(X_test_scaled)):.2%}")
 
-print("\nTraining Baseline Model (Logistic Regression)...")
-model_lr = LogisticRegression(multi_class='multinomial', max_iter=1000)
-model_lr.fit(X_train_scaled, y_train)
+print("\n--- Phase 2: SVM & Random Forest ---")
+rf = RandomForestClassifier(n_estimators=100, random_state=42).fit(X_train_scaled, y_train)
+print(f"RF Accuracy: {accuracy_score(y_test, rf.predict(X_test_scaled)):.2%}")
 
-# --- 9. EVALUASI ---
+# Phase 3: Clustering
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+X_full_scaled = scaler.transform(X)
+df['Cluster'] = kmeans.fit_predict(X_full_scaled)
+print(f"Silhouette Score: {silhouette_score(X_full_scaled, df['Cluster']):.3f}")
 
-y_pred = model_lr.predict(X_test_scaled)
-
-print("\n--- PREPROCESSING & PHASE 1 SELESAI ---")
-print(f"Total data yang diolah: {len(df)} baris")
-print(f"Akurasi Baseline: {accuracy_score(y_test, y_pred):.2%}")
-print("\nLaporan Klasifikasi:")
-print(classification_report(y_test, y_pred, target_names=le.classes_))
-
-
-from sklearn.ensemble import RandomForestClassifier
-import joblib
-
-# 1. Training Random Forest (Phase 2)
-print("\nTraining Phase 2: Random Forest...")
-model_rf = RandomForestClassifier(n_estimators=100, random_state=42, class_weight='balanced')
-model_rf.fit(X_train_scaled, y_train)
-
-# 2. Evaluasi
-y_pred_rf = model_rf.predict(X_test_scaled)
-print(f"Akurasi Random Forest: {accuracy_score(y_test, y_pred_rf):.2%}")
-print("\nLaporan Klasifikasi Random Forest:")
-print(classification_report(y_test, y_pred_rf, target_names=le.classes_))
-
-# 3. Simpan Hasil untuk Dashboard (Sangat Penting!)
-# Kita simpan model yang paling akurat (biasanya Random Forest)
-joblib.dump(model_rf, 'mindguard_model.pkl')
+# 5. EXPORT
+joblib.dump(rf, 'mindguard_model.pkl') 
 joblib.dump(scaler, 'scaler.pkl')
 joblib.dump(le, 'label_encoder.pkl')
+joblib.dump(kmeans, 'kmeans_cluster.pkl') 
 
-print("\nPhase 2 Selesai. Model 'mindguard_model.pkl' telah siap!")
-
-
-from sklearn.model_selection import GridSearchCV
-print("\n--- Memulai Hyperparameter Tuning (Grid Search) ---")
-
-# 1. Tentukan kombinasi parameter yang ingin dicoba
-param_grid = {
-    'n_estimators': [100, 200],         # Jumlah pohon
-    'max_depth': [10, 20, None],        # Kedalaman pohon agar tidak overfitting
-    'min_samples_split': [2, 5],        # Batas minimal data untuk membelah cabang
-    'criterion': ['gini', 'entropy']    # Cara mengukur kualitas pembelahan
-}
-
-# 2. Inisialisasi GridSearchCV
-# cv=5 artinya data dibagi 5 kali untuk validasi silang
-grid_search = GridSearchCV(
-    estimator=RandomForestClassifier(random_state=42, class_weight='balanced'),
-    param_grid=param_grid,
-    cv=3, 
-    n_jobs=-1, # Pakai semua core prosesor laptopmu agar cepat
-    verbose=1,
-    scoring='f1_weighted' # Kita fokus ke F1-Score karena data tidak seimbang
-)
-
-# 3. Training ulang dengan Grid Search
-grid_search.fit(X_train_scaled, y_train)
-
-# 4. Ambil Model Terbaik
-best_model = grid_search.best_params_
-print(f"\nParameter Terbaik: {best_model}")
-
-final_model = grid_search.best_estimator_
-
-# 5. Evaluasi Ulang
-y_pred_tuned = final_model.predict(X_test_scaled)
-print(f"\nAkurasi Setelah Tuning: {accuracy_score(y_test, y_pred_tuned):.2%}")
-print("\nLaporan Klasifikasi Akhir:")
-print(classification_report(y_test, y_pred_tuned, target_names=le.classes_))
-
-# 6. Simpan Model Terbaik yang SUDAH DI-TUNING
-joblib.dump(final_model, 'mindguard_model.pkl')
-print("\nModel terbaik hasil tuning telah disimpan!")
+print("\nSemua aset AI berhasil disimpan! 🚀")
