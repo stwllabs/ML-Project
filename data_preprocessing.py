@@ -47,9 +47,13 @@ y = le.fit_transform(df['Stress_Level'])
 # Split Data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+scaler_model = StandardScaler()
+X_train_scaled = scaler_model.fit_transform(X_train)
+X_test_scaled = scaler_model.transform(X_test)
+
+X_cluster_scaled = scaler_model.fit_transform(
+    df[['Digital_Engagement', 'Sleep_Quality_Index', 'Academic_Load_Pressure']]
+)
 
 # --- PHASE 1: LOGISTIC REGRESSION ---
 print("\n--- PHASE 1: LOGISTIC REGRESSION (Baseline) ---")
@@ -76,7 +80,11 @@ print(classification_report(y_test, y_pred_rf, target_names=le.classes_))
 
 # --- PHASE 3: CLUSTERING ---
 print("\n--- PHASE 3: K-MEANS CLUSTERING ---")
-X_cluster_scaled = scaler.fit_transform(df[['Digital_Engagement', 'Sleep_Quality_Index', 'Academic_Load_Pressure']])
+
+scaler_cluster = StandardScaler()  # ← create a dedicated scaler
+X_cluster_scaled = scaler_cluster.fit_transform(
+    df[['Digital_Engagement', 'Sleep_Quality_Index', 'Academic_Load_Pressure']]
+)
 kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
 df['Behavioral_Cluster'] = kmeans.fit_predict(X_cluster_scaled)
 
@@ -84,7 +92,9 @@ print(f"Silhouette Coefficient: {silhouette_score(X_cluster_scaled, df['Behavior
 
 # EXPORT
 joblib.dump(rf_model, 'mindguard_model.pkl')
-joblib.dump(scaler, 'scaler.pkl')
+joblib.dump(scaler_model, 'scaler_model.pkl')
+joblib.dump(scaler_cluster, 'scaler_cluster.pkl')
 joblib.dump(le, 'label_encoder.pkl')
+joblib.dump(kmeans, 'kmeans_cluster.pkl')
 
 print("\nModel Pipeline Integrated & Assets Saved Successfully!")
