@@ -1,0 +1,124 @@
+C:\Users\stell\OneDrive\Documents\Semester Four\Project ML\data_preprocessing.py:163: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  processed_df.loc[:, 'Behavioral_Cluster'] = kmeans.fit_predict(X_cluster_scaled)
+
+Label distribution:
+Stress_Level
+Medium    966
+Low       826
+High      205
+Name: count, dtype: int64
+
+--- PHASE 1: LOGISTIC REGRESSION (Baseline) ---
+Baseline Accuracy: 61.50%
+Baseline Balanced Accuracy: 65.19%
+
+--- PHASE 2: RESAMPLING + CLASSIFIER TUNING ---
+XGBoost and imbalanced-learn detected — running SMOTE + XGBoost GridSearch (scoring=f1_macro)
+Fitting 5 folds for each of 16 candidates, totalling 80 fits
+
+Best pipeline params:
+{'clf__learning_rate': 0.05, 'clf__max_depth': 4, 'clf__n_estimators': 200, 'clf__subsample': 0.8}
+Grid search best CV (f1_macro): 60.54%
+Final Test accuracy: 70.50%
+Final Test balanced accuracy: 62.83%
+
+Classification Report:
+              precision    recall  f1-score   support
+
+        High       0.74      0.41      0.53        41
+         Low       0.75      0.70      0.72       165
+      Medium       0.67      0.77      0.72       194
+
+    accuracy                           0.70       400
+   macro avg       0.72      0.63      0.66       400
+weighted avg       0.71      0.70      0.70       400
+
+
+--- PHASE 3: K-MEANS CLUSTERING ---
+Silhouette Coefficient: 0.264
+
+Model Pipeline Integrated & Assets Saved Successfully!
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=100, clf__subsample=1.0; total time=   1.3s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=100, clf__subsample=1.0; total time=   1.0s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=200, clf__subsample=1.0; total time=   1.8s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=100, clf__subsample=0.8; total time=   2.8s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=200, clf__subsample=0.8; total time=   5.3s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=100, clf__subsample=0.8; total time=   0.9s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=100, clf__subsample=1.0; total time=   0.7s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=100, clf__subsample=1.0; total time=   0.7s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=200, clf__subsample=1.0; total time=   1.7s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=100, clf__subsample=0.8; total time=   2.1s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=100, clf__subsample=1.0; total time=   2.4s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=200, clf__subsample=0.8; total time=   6.3s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=100, clf__subsample=0.8; total time=   1.1s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=200, clf__subsample=0.8; total time=   2.0s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=200, clf__subsample=1.0; total time=   2.7s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=100, clf__subsample=1.0; total time=   2.3s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=200, clf__subsample=1.0; total time=   4.6s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=100, clf__subsample=1.0; total time=   1.3s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=200, clf__subsample=0.8; total time=   2.8s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=100, clf__subsample=0.8; total time=   3.6s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=200, clf__subsample=0.8; total time=   6.8s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=100, clf__subsample=0.8; total time=   1.6s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=200, clf__subsample=1.0; total time=   2.9s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=100, clf__subsample=0.8; total time=   2.9s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=200, clf__subsample=0.8; total time=   4.3s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=100, clf__subsample=0.8; total time=   0.9s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=100, clf__subsample=0.8; total time=   1.5s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=200, clf__subsample=0.8; total time=   2.3s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=100, clf__subsample=0.8; total time=   1.9s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=100, clf__subsample=1.0; total time=   3.6s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=200, clf__subsample=1.0; total time=   5.3s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=100, clf__subsample=1.0; total time=   1.1s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=100, clf__subsample=1.0; total time=   1.2s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=200, clf__subsample=1.0; total time=   2.8s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=100, clf__subsample=1.0; total time=   2.7s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=200, clf__subsample=0.8; total time=   4.8s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=100, clf__subsample=0.8; total time=   1.4s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=200, clf__subsample=0.8; total time=   2.3s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=200, clf__subsample=1.0; total time=   1.7s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=100, clf__subsample=1.0; total time=   3.0s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=200, clf__subsample=1.0; total time=   6.4s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=100, clf__subsample=0.8; total time=   1.5s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=200, clf__subsample=0.8; total time=   1.8s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=200, clf__subsample=1.0; total time=   1.9s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=100, clf__subsample=1.0; total time=   2.0s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=200, clf__subsample=0.8; total time=   3.9s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=200, clf__subsample=1.0; total time=   3.7s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=200, clf__subsample=1.0; total time=   2.2s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=100, clf__subsample=0.8; total time=   2.4s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=200, clf__subsample=0.8; total time=   8.2s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=100, clf__subsample=0.8; total time=   1.2s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=200, clf__subsample=0.8; total time=   2.4s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=100, clf__subsample=0.8; total time=   2.6s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=100, clf__subsample=1.0; total time=   2.8s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=200, clf__subsample=1.0; total time=   4.4s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=100, clf__subsample=1.0; total time=   1.0s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=200, clf__subsample=1.0; total time=   1.5s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=200, clf__subsample=1.0; total time=   2.7s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=100, clf__subsample=1.0; total time=   3.3s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=200, clf__subsample=1.0; total time=   5.4s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=100, clf__subsample=1.0; total time=   1.5s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=200, clf__subsample=0.8; total time=   3.2s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=100, clf__subsample=0.8; total time=   2.0s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=200, clf__subsample=0.8; total time=   3.6s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=200, clf__subsample=1.0; total time=   4.1s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=200, clf__subsample=0.8; total time=   2.1s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=100, clf__subsample=0.8; total time=   3.0s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=200, clf__subsample=0.8; total time=   6.4s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=200, clf__subsample=1.0; total time=   2.8s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=100, clf__subsample=0.8; total time=   1.4s
+[CV] END clf__learning_rate=0.05, clf__max_depth=4, clf__n_estimators=200, clf__subsample=0.8; total time=   3.2s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=100, clf__subsample=0.8; total time=   2.2s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=100, clf__subsample=1.0; total time=   1.9s
+[CV] END clf__learning_rate=0.05, clf__max_depth=6, clf__n_estimators=200, clf__subsample=1.0; total time=   4.1s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=100, clf__subsample=0.8; total time=   1.0s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=100, clf__subsample=1.0; total time=   0.6s
+[CV] END clf__learning_rate=0.1, clf__max_depth=4, clf__n_estimators=200, clf__subsample=0.8; total time=   2.8s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=100, clf__subsample=1.0; total time=   2.2s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=200, clf__subsample=0.8; total time=   6.4s
+[CV] END clf__learning_rate=0.1, clf__max_depth=6, clf__n_estimators=200, clf__subsample=1.0; total time=   3.2s
