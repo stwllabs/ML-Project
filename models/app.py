@@ -475,7 +475,7 @@ def steps_html(state, model_label="Model"):
 with st.sidebar:
     st.markdown("""<div class="brand">
       <div class="brand-ico">🧠</div>
-      <div><div class="brand-name">MindSense AI</div><div class="brand-sub">Stress Intelligence v2.0</div></div>
+      <div><div class="brand-name">MindSense AI</div><div class="brand-sub">Stress Intelligence</div></div>
     </div>""", unsafe_allow_html=True)
 
     # ── Model selector ──
