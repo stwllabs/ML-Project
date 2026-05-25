@@ -309,10 +309,10 @@ html, body, [data-testid="stAppViewContainer"] {
   transition: background .2s, border-color .2s;
 }
 .step-dot.done   { background:var(--success); border-color:transparent; color:#fff; font-size:.85rem; }
-.step-dot.active { background:var(--primary); border-color:transparent; color:#fff; }
+.step-dot.active { background:var(--success); border-color:transparent; color:#fff; }
 .step-lbl { font-size:.78rem; font-weight:600; color:var(--muted); line-height:1.3; }
 .step-lbl.done-lbl   { color:var(--success); }
-.step-lbl.active-lbl { color:var(--accent); }
+.step-lbl.active-lbl { color:var(--success); }
             
 
 /* Empty */
