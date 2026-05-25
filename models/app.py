@@ -655,6 +655,6 @@ else:
             st.download_button("📊 Data CSV", out.to_csv(index=False).encode(), "mindsense_hasil.csv","text/csv", use_container_width=True)
 
     st.markdown(f"""<div class="footer">
-      🧠 <strong>MindSense AI</strong> · {selected_model_short} + K-Means Clustering<br>
+      🧠 <strong>MindSense AI</strong> · {selected_model_short} + Rule-Based System<br>
       <span>Hasil bersifat indikatif dan tidak menggantikan konsultasi profesional.</span>
     </div>""", unsafe_allow_html=True)
