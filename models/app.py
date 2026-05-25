@@ -532,9 +532,9 @@ st.markdown(f"""<div class="hero">
     </div>
     <div class="info-card" style="background:rgba(99,102,241,.10);border:1px solid rgba(99,102,241,.25);">
       <span class="info-card-icon">🔵</span>
-      <div class="info-card-name" style="color:#818cf8">K-Means Clustering</div>
-      <div class="info-card-type" style="color:#818cf8">Unsupervised · 3 Kluster</div>
-      <div class="info-card-desc">Mengelompokkan mahasiswa ke 3 profil perilaku: kurang tidur, seimbang, dan layar berlebih.</div>
+      <div class="info-card-name" style="color:#818cf8">Rule-Based System</div>
+      <div class="info-card-type" style="color:#818cf8">Rule-Based · Manual Logic</div>
+      <div class="info-card-desc">Mengelompokkan mahasiswa berdasarkan aturan yang ditentukan dari pola tidur, waktu layar, dan aktivitas harian.</div>
     </div>
     <div class="info-card" style="background:rgba(255,255,255,.04);border:1px solid var(--border);">
       <span class="info-card-icon">📊</span>
